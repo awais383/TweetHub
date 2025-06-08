@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}Tweet List{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-10" data-aos="fade-down">
+  <h1 class="text-2xl font-extrabold text-teal-400 tracking-tight">Latest Tweets</h1>
+  {% if user.is_authenticated %}
+    <a href="{% url 'tweet_create' %}"
+       class="bg-gradient-to-r from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white px-6 py-2 rounded-lg font-semibold shadow-lg transition-all">
+      + Create Tweet
+    </a>
+  {% endif %}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+{% for tweet in tweets %}
+  <div class="bg-gray-800 p-4 rounded shadow-md space-y-2" data-aos="fade-up">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="text-lg font-semibold text-cyan-400">@{{ tweet.user.username }}</h3>
+        <p class="text-gray-400 text-sm">{{ tweet.created_at|date:"M d, Y H:i" }}</p>
+      </div>
+    </div>
+
+    <p class="text-white mt-2">{{ tweet.text }}</p>
+
+    {% if tweet.photo %}
+      <img src="{{ tweet.photo.url }}" alt="Tweet Photo" class="w-full h-48 object-cover rounded shadow-md mt-2">
+    {% endif %}
+
+    {% if request.user == tweet.user %}
+    <div class="flex gap-4 mt-4">
+      <!-- Edit Button Box -->
+      <a href="{% url 'tweet_edit' tweet.id %}"
+         class="px-4 py-2 border border-yellow-400 text-yellow-400 rounded-lg font-semibold
+                hover:bg-yellow-400 hover:text-gray-900 transition-colors duration-300 shadow-sm
+                flex items-center justify-center gap-2">
+         Edit
+      </a>
+
+      <!-- Delete Button Box -->
+      <form action="{% url 'tweet_delete' tweet.id %}" method="post" class="inline" onsubmit="return confirmDelete()">
+        {% csrf_token %}
+        <button type="submit"
+                class="px-4 py-2 border border-red-500 text-red-500 rounded-lg font-semibold
+                       hover:bg-red-500 hover:text-white transition-colors duration-300 shadow-sm
+                       flex items-center justify-center gap-2">
+           Delete
+        </button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>
+
+<script>
+  function confirmDelete() {
+    return confirm('Are you sure you want to delete this tweet?');
+  }
+</script>
+{% endblock %}
