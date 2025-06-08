@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Tweet: Home Page
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4">
+  <h1 class="mt-4 text-4xl font-bold mb-6">Welcome to TweetHub</h1>
+
+  <!-- Dark-themed Tweet Form -->
+  <div class="bg-gray-900 p-6 rounded-lg shadow-lg text-white">
+    <h2 class="text-2xl font-semibold mb-4">
+      {% if form.instance.pk %}
+        Edit Tweet
+      {% else %}
+        Create Tweet
+      {% endif %}
+    </h2>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- Text Field -->
+      <div>
+        {{ form.text.label_tag }}
+        {{ form.text }}
+        {% if form.text.errors %}
+          <p class="text-red-400 text-sm mt-1">{{ form.text.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Photo Upload Field -->
+      <div>
+        {{ form.photo.label_tag }}
+        {{ form.photo }}
+        {% if form.photo.errors %}
+          <p class="text-red-400 text-sm mt-1">{{ form.photo.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div class="flex items-center gap-4 mt-6">
+        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-md">
+          {% if form.instance.pk %}Update{% else %}Submit{% endif %}
+        </button>
+        <a href="{% url 'tweet_list' %}" class="text-blue-400 hover:text-blue-200 hover:underline font-medium">
+          Back to Tweet List
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tailwind Styling Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fields = document.querySelectorAll("form input, form textarea, form select");
+    fields.forEach((field) => {
+      field.classList.add(
+        "bg-gray-700",
+        "text-white",
+        "p-2",
+        "rounded",
+        "w-full",
+        "focus:outline-none",
+        "focus:ring-2",
+        "focus:ring-blue-500"
+      );
+    });
+  });
+</script>
+{% endblock %}
