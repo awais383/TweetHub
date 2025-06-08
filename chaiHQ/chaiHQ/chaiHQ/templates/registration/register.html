@@ -1,0 +1,81 @@
+ {% extends "layout.html" %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+  <div class="bg-gray-800 rounded-lg shadow-lg max-w-md w-full p-8">
+    <h2 class="text-3xl font-extrabold text-teal-400 mb-8 text-center">Register</h2>
+
+    <form method="POST" id="registerForm" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="mb-6">
+          <label for="{{ field.id_for_label }}" class="block text-white font-semibold mb-2">
+            {{ field.label }}{% if field.field.required %}<span class="text-red-500"> *</span>{% endif %}
+          </label>
+          {{ field }}
+
+          {% if field.errors %}
+            <p class="text-red-500 mt-1 text-sm">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white font-semibold py-3 rounded-lg shadow-md transition-all">
+        Create Account
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-gray-400">
+      Already have an account?
+      <a href="{% url 'login' %}" class="text-teal-400 hover:text-teal-300 font-semibold">Login here</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Apply Tailwind classes manually to all form fields on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    const formElements = document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea');
+    formElements.forEach(el => {
+      el.classList.add(
+        'bg-gray-700',   // lighter than container (gray-800)
+        'text-white',
+        'border-2',
+        'border-gray-600',
+        'rounded-lg',
+        'w-full',
+        'p-2',
+        'text-base',
+        'focus:outline-none',
+        'focus:ring-2',
+        'focus:ring-teal-500',
+        'focus:border-transparent',
+        'placeholder-gray-400'
+      );
+    });
+  });
+
+  // Client-side validation
+  document.getElementById('registerForm').addEventListener('submit', function (event) {
+    const form = event.target;
+    let valid = true;
+
+    for (const element of form.elements) {
+      if ((element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA')
+        && element.hasAttribute('required') && !element.value.trim()) {
+        element.classList.add('border-red-500');
+        valid = false;
+      } else {
+        element.classList.remove('border-red-500');
+      }
+    }
+
+    if (!valid) {
+      event.preventDefault();
+      alert('Please fill in all required fields.');
+    }
+  });
+</script>
+{% endblock %} 
