@@ -1,0 +1,1 @@
+TweetHub is a mini social media web app where users can create, edit, and delete short messages called "tweets." It features: Django backend with user authentication (login/logout) Tailwind CSS frontend with a modern, responsive layout Mobile-friendly navbar, footer, and hamburger menu
